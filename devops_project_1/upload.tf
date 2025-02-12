@@ -9,5 +9,5 @@ resource "aws_s3_bucket_object" "files" {
 
   bucket = aws_s3_bucket.app_bucket.id
   key    = each.value
-  source = "html-web-app/${each.value}"
+  source = "./html-web-app/${each.value}"
 }
