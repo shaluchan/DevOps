@@ -16,7 +16,7 @@ resource "aws_instance" "app_instance_1" {
     tags = {
         Name = "app_instance_1"
     }
-    depends_on = [aws_ami_from_instance.custom_ami]
+    depends_on = [aws_nat_gateway.nat_gw,aws_ami_from_instance.custom_ami]
 }
 resource "aws_instance" "app_instance_2" {
     ami = aws_ami_from_instance.custom_ami.id
@@ -36,7 +36,7 @@ resource "aws_instance" "app_instance_2" {
     tags = {
         Name = "app_instance_2"
     }
-    depends_on = [aws_ami_from_instance.custom_ami]
+    depends_on = [aws_nat_gateway.nat_gw,aws_ami_from_instance.custom_ami]
 }
 resource "aws_instance" "bastion_instance" {
     ami = aws_ami_from_instance.custom_ami.id
@@ -47,5 +47,5 @@ resource "aws_instance" "bastion_instance" {
     tags = {
         Name = "bastion_instance"
     }
-    depends_on = [aws_ami_from_instance.custom_ami]
+    depends_on = [aws_nat_gateway.nat_gw,aws_ami_from_instance.custom_ami]
 }
