@@ -43,6 +43,7 @@ resource "aws_instance" "bastion_instance" {
     instance_type = "t3.micro"
     subnet_id = aws_subnet.public_subnet.id
     key_name = aws_key_pair.aws_key_pair.key_name
+    associate_public_ip_address = true
     security_groups=[aws_security_group.bastion-sg.id]
     tags = {
         Name = "bastion_instance"
