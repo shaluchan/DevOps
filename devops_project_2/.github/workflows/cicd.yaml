@@ -27,8 +27,16 @@ jobs:
       run: |
         pwd
         ls -la
+        find . -name "go.mod"
+
+    - name: Initialize Go module if needed
+      run: |
         cd devops_project_2/go-web-app
-        ls -la
+        if [ ! -f "go.mod" ]; then
+          go mod init github.com/shaluchan/DevOps/devops_project_2/go-web-app
+        fi
+        go mod tidy
+
 
     - name: Build Go application
       run: |
