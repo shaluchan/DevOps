@@ -24,9 +24,11 @@ jobs:
         go-version: 1.22
 
     - name: Build
+      working-directory: devops_project_2/go-web-app
       run: go build -o go-web-app
 
     - name: Test
+      working-directory: devops_project_2/go-web-app
       run: go test ./...
   
   code-quality:
@@ -62,8 +64,8 @@ jobs:
     - name: Build and Push action
       uses: docker/build-push-action@v6
       with:
-        context: .
-        file: ./Dockerfile
+        context: devops_project_2/go-web-app
+        file: devops_project_2/go-web-app/Dockerfile
         push: true
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/go-web-app:${{github.run_id}}
 
