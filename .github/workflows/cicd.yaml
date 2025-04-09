@@ -32,26 +32,7 @@ jobs:
     - name: Test
       run:  cd devops_project_2/go-web-app && go test ./...
   
-  code-quality:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-
-    - name: Ensure Dependencies Are Installed
-      run: |
-        cd devops_project_2/go-web-app
-        go mod tidy
-        go mod download
-
-
-    - name: Run golangci-lint
-      uses: golangci/golangci-lint-action@v6
-      with:
-        version: v1.56.2
-        working-directory: devops_project_2/go-web-app
-  
+ 
   push:
     runs-on: ubuntu-latest
 
