@@ -65,7 +65,7 @@ jobs:
     - name: Build and Push action
       uses: docker/build-push-action@v6
       with:
-        context: .
+        context: devops_project_2/go-web-app
         file: devops_project_2/go-web-app/Dockerfile
         push: true
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/go-web-app:${{github.run_id}}
