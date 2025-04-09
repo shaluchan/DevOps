@@ -1,5 +1,8 @@
+# CICD using GitHub actions
+
 name: CI/CD
 
+# Exclude the workflow to run on changes to the helm chart
 on:
   push:
     branches:
@@ -23,60 +26,10 @@ jobs:
       with:
         go-version: 1.22
 
-    - name: Debug directory structure
-      run: |
-        pwd
-        find . -type d | sort
-        find . -name "*.go" | sort
-        find . -name "go.mod" | sort
+    - name: Build
+      run: go build -o go-web-app
 
-    - name: Debug Actions environment
-      run: |
-       echo "Current directory: $(pwd)"
-       echo "Repository structure:"
-       find . -type d -not -path "*/\.*" | sort
-       echo "Go files:"
-       find . -name "*.go" | sort
-       echo "Go mod files:"
-       find . -name "go.mod" | sort
-      
-    - name: Initialize Go module
-      run: |
-       if [ -d "./devops_project_2/go-web-app" ]; then
-        cd ./devops_project_2/go-web-app
-       elif [ -d "./go-web-app" ]; then
-        cd ./go-web-app
-       else
-        echo "Could not find go-web-app directory"
-        find . -type d | sort
-        exit 1
-       fi
-      
-       echo "Creating go.mod in $(pwd)"
-       go mod init github.com/shaluchan/DevOps/go-web-app
-       ls -la
-      
-    - name: Build Go application
-      run: |
-       if [ -d "./devops_project_2/go-web-app" ]; then
-        cd ./devops_project_2/go-web-app
-       elif [ -d "./go-web-app" ]; then
-        cd ./go-web-app
-       else
-        echo "Could not locate go-web-app directory"
-        exit 1
-       fi
-      
-       echo "Building in $(pwd)"
-       go mod tidy
-       go build -v -o go-web-app
-
-    - name: Verify Build Output
-      run: |
-        find . -name "go-web-app" -type f
- 
     - name: Test
-      working-directory: devops_project_2/go-web-app
       run: go test ./...
   
   code-quality:
@@ -112,8 +65,8 @@ jobs:
     - name: Build and Push action
       uses: docker/build-push-action@v6
       with:
-        context: devops_project_2/go-web-app
-        file: devops_project_2/go-web-app/Dockerfile
+        context: .
+        file: ./Dockerfile
         push: true
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/go-web-app:${{github.run_id}}
 
@@ -139,3 +92,4 @@ jobs:
         git add helm/go-web-app-chart/values.yaml
         git commit -m "Update tag in Helm chart"
         git push
+
