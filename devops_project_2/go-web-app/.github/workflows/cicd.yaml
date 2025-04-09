@@ -30,29 +30,46 @@ jobs:
         find . -name "*.go" | sort
         find . -name "go.mod" | sort
 
-    - name: Initialize Go module if needed
+    - name: Debug Actions environment
       run: |
-        cd devops_project_2/go-web-app
-        if [ ! -f "go.mod" ]; then
-          go mod init github.com/shaluchan/DevOps/devops_project_2/go-web-app
-        fi
-        go mod tidy
-
-
+       echo "Current directory: $(pwd)"
+       echo "Repository structure:"
+       find . -type d -not -path "*/\.*" | sort
+       echo "Go files:"
+       find . -name "*.go" | sort
+       echo "Go mod files:"
+       find . -name "go.mod" | sort
+      
+    - name: Initialize Go module
+      run: |
+       if [ -d "./devops_project_2/go-web-app" ]; then
+        cd ./devops_project_2/go-web-app
+       elif [ -d "./go-web-app" ]; then
+        cd ./go-web-app
+       else
+        echo "Could not find go-web-app directory"
+        find . -type d | sort
+        exit 1
+       fi
+      
+       echo "Creating go.mod in $(pwd)"
+       go mod init github.com/shaluchan/DevOps/go-web-app
+       ls -la
+      
     - name: Build Go application
       run: |
-        # First try to find the directory with main.go
-        MAIN_DIR=$(find . -name "main.go" -exec dirname {} \;)
-        echo "Found main.go in: $MAIN_DIR"
-        
-        cd $MAIN_DIR
-
-        if [ ! -f "go.mod" ]; then
-         echo "Creating go.mod file"
-         go mod init github.com/shaluchan/DevOps
-         go mod tidy
-        fi
-        go build -o go-web-app
+       if [ -d "./devops_project_2/go-web-app" ]; then
+        cd ./devops_project_2/go-web-app
+       elif [ -d "./go-web-app" ]; then
+        cd ./go-web-app
+       else
+        echo "Could not locate go-web-app directory"
+        exit 1
+       fi
+      
+       echo "Building in $(pwd)"
+       go mod tidy
+       go build -v -o go-web-app
 
     - name: Verify Build Output
       run: |
