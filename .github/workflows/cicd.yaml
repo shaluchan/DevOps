@@ -30,7 +30,7 @@ jobs:
       run: cd devops_project_2/go-web-app && go build -o go-web-app .
 
     - name: Test
-      run: go test ./...
+      run:  cd devops_project_2/go-web-app && go test ./...
   
   code-quality:
     runs-on: ubuntu-latest
