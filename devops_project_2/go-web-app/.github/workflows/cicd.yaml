@@ -26,8 +26,9 @@ jobs:
     - name: Debug directory structure
       run: |
         pwd
-        ls -la
-        find . -name "go.mod"
+        find . -type d | sort
+        find . -name "*.go" | sort
+        find . -name "go.mod" | sort
 
     - name: Initialize Go module if needed
       run: |
@@ -40,15 +41,23 @@ jobs:
 
     - name: Build Go application
       run: |
-        cd devops_project_2/go-web-app
-        go mod tidy
+        # First try to find the directory with main.go
+        MAIN_DIR=$(find . -name "main.go" -exec dirname {} \;)
+        echo "Found main.go in: $MAIN_DIR"
+        
+        cd $MAIN_DIR
+
+        if [ ! -f "go.mod" ]; then
+         echo "Creating go.mod file"
+         go mod init github.com/shaluchan/DevOps
+         go mod tidy
+        fi
         go build -o go-web-app
 
     - name: Verify Build Output
       run: |
-        cd devops_project_2/go-web-app
-        ls -la
-
+        find . -name "go-web-app" -type f
+ 
     - name: Test
       working-directory: devops_project_2/go-web-app
       run: go test ./...
